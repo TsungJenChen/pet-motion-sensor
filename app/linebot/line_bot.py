@@ -32,4 +32,5 @@ class LineBot:
         pass
 
 if __name__ == "__main__":
-    send_message('hello')
+    LB = LineBot()
+    LB.send_message('hello')
