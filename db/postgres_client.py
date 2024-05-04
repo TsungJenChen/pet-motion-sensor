@@ -42,3 +42,42 @@ class PostgresSQL():
 
         except Exception as e:
             raise e
+
+    def select_records(self, query):
+        try:
+            conn = psycopg2.connect(
+                dbname=self.config['database'],
+                host=self.config['host'],
+                user=self.config['user'],
+                password=self.config['password'],
+                port=self.config['port'])
+            print("DB Connected Successfully")
+
+            cur = conn.cursor()
+            cur.execute(query)
+            conn.commit()
+            result = cur.fetchall()
+            conn.close()
+            print("DB Connection closed")
+            return result
+        except Exception as e:
+            raise e
+
+    def delete_records(self, query):
+        try:
+            conn = psycopg2.connect(
+                dbname=self.config['database'],
+                host=self.config['host'],
+                user=self.config['user'],
+                password=self.config['password'],
+                port=self.config['port'])
+            print("DB Connected Successfully")
+
+            cur = conn.cursor()
+            cur.execute(query)
+            conn.commit()
+            conn.close()
+            print("DB Connection closed")
+
+        except Exception as e:
+            raise e
