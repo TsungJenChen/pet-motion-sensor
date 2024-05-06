@@ -4,12 +4,14 @@ import db
 from app import server
 from db import postgres_client
 from db.queries import *
+from app.linebot import line_bot
+
+
 class TestServer(unittest.TestCase):
 
     def test_linebot(self):
-        pass
-
-
+        LB = line_bot.LineBot()
+        LB.send_message('The current time is ' + datetime.datetime.now().strftime("%Y/%m/%d, %H:%M:%S"))
     def test_aws(self):
         pass
 
