@@ -5,7 +5,7 @@ import ast
 from .server_config import *
 from db.postgres_client import PostgresSQL
 from db.queries import *
-import boto3
+#import boto3
 import json
 from .message import Message
 
