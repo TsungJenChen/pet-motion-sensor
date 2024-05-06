@@ -48,7 +48,7 @@ class Server:
 
         # self.invoke_lambda()
 
-        print(data) # Leave for logging
+        print(data)  # Leave for logging
 
     @staticmethod
     def data_formatter(data: dict):
@@ -67,23 +67,23 @@ class Server:
 
         return record
 
-    def invoke_lambda(self, data: dict):
-
-        if data['type'] == 1:
-            msg = Message.MSG['normal'].format(data['litter_box_id'], data['in_time'], data['out_time'])
-        elif data['type'] == 2:
-            msg = Message.MSG['abnormal'].format(data['litter_box_id'], data['in_time'], data['out_time'])
-        else:
-            pass
-
-        self.lambda_client.invoke(
-            FunctionName='LAMBDA_FUNC_NAME',
-            InvocationType='RequestResponse',
-            LogType='None',  # 'Tail'
-            ClientContext='string',
-            Payload=json.dumps(msg),
-            Qualifier='string'
-        )
+    # def invoke_lambda(self, data: dict):
+    #
+    #     if data['type'] == 1:
+    #         msg = Message.MSG['normal'].format(data['litter_box_id'], data['in_time'], data['out_time'])
+    #     elif data['type'] == 2:
+    #         msg = Message.MSG['abnormal'].format(data['litter_box_id'], data['in_time'], data['out_time'])
+    #     else:
+    #         pass
+    #
+    #     self.lambda_client.invoke(
+    #         FunctionName='LAMBDA_FUNC_NAME',
+    #         InvocationType='RequestResponse',
+    #         LogType='None',  # 'Tail'
+    #         ClientContext='string',
+    #         Payload=json.dumps(msg),
+    #         Qualifier='string'
+    #     )
 
 if __name__ == "__main__":
 
