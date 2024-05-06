@@ -2,12 +2,12 @@ import datetime
 import socket
 import time
 import ast
-from server_config import *
+from .server_config import *
 from db.postgres_client import PostgresSQL
 from db.queries import *
 import boto3
 import json
-from message import Message
+from .message import Message
 
 
 class Server:
