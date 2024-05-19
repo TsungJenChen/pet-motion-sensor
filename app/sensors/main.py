@@ -6,7 +6,7 @@ import socket
 import wifi_connection
 from sensor_config import *
 from ntptime import *
-
+from heartbeat import *
 
 class Sensor():
 
@@ -21,8 +21,10 @@ class Sensor():
         self.threshold = THRESHOLD
         self.record_type = 1  # Assumed to be a normal enter got detected
 
-        self.ntptime = ntptime()
+        self.ntptime = Ntptime()
         self.board_led = Pin("LED", Pin.OUT)
+
+        self.heartbeat = Heartbeat()
 
     def execute(self):
 
@@ -45,7 +47,21 @@ class Sensor():
         print(wifi_status)
         self.board_led.value(1 - wifi_status)
 
+        heartbeat_check_status = 0
         while True:
+
+            heartbeat_check_status, heartbeat_data = self.heartbeat.check_heartbeat(heartbeat_check_status)
+
+            if heartbeat_data is None:
+                continue
+            else:
+                try:
+                    msg = json.dumps(heartbeat_data).encode('utf-8')
+                    self.udp_client.sendto(msg, self.server_address)
+                    print(msg)
+                    print("Message Sent")
+                except Exception as e:
+                    print(e)
 
             # if self.wifi.is_connection_aborted():
             #     print("Connection failed.")
@@ -56,7 +72,7 @@ class Sensor():
             if sensor > 0:
                 self.timer = 0
                 # in_time = utime.localtime()
-                in_time = ntptime.time_getter()
+                in_time = self.ntptime.time_getter()
                 print(in_time)
 
                 while sensor != 0:
@@ -70,12 +86,11 @@ class Sensor():
                         break
 
                 # out_time = utime.localtime()
-                out_time = ntptime.time_getter()
+                out_time = self.ntptime.time_getter()
                 print(out_time)
 
-                record = {'in_time': in_time, 'out_time': out_time,
-                          'litter_box_id': self.litter_box_id, 'type': self.record_type}
-
+                record = {'in_time': in_time, 'out_time': out_time, 'litter_box_id': self.litter_box_id,
+                          'type': self.record_type, 'msg_type_cd': 'N'}
                 try:
                     msg = json.dumps(record).encode('utf-8')
                     self.udp_client.sendto(msg, self.server_address)
@@ -83,4 +98,4 @@ class Sensor():
                 except Exception as e:
                     print(e)
             else:
-                pass
+                continue

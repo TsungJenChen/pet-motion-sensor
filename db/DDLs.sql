@@ -16,3 +16,9 @@ update_user_id varchar(255) NOT NULL,
 create_time timestamp NOT NULL,
 create_user_id varchar(255) NOT NULL
 );
+
+DROP TABLE IF EXISTS cat.heartbeat;
+create table cat.heartbeat (
+id SERIAL PRIMARY KEY,
+time_stamp timestamp NOT NULL
+);

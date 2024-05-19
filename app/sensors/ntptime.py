@@ -14,7 +14,7 @@ except:
     import struct
 
 
-class ntptime:
+class Ntptime():
 
     def __init__(self):
         self.local_time_calibrator = 9*60*60
