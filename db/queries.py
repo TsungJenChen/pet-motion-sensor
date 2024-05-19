@@ -19,6 +19,12 @@ SQL_DICT = {
     DELETE FROM cat.toilet
     WHERE create_user_id = 'test'
     
+    """,
+    'INSERT_HEARTBEAT_RECORD': """
+    INSERT INTO cat.heartbeat 
+    (id, time_stamp)
+    VALUES
+    (DEFAULT, '{time}')
     """
 
 

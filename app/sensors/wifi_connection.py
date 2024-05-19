@@ -9,7 +9,7 @@ class Connection:
 
     def __init__(self):
         self.wlan = network.WLAN(network.STA_IF)
-        self.led = Pin("LED", Pin.OUT)
+    #    self.led = Pin("LED", Pin.OUT)
     def connect(self):
         self.wlan.active(True)
         self.wlan.connect(WIFI_SSID, WIFI_PW)
@@ -17,10 +17,9 @@ class Connection:
     def show_connection_status(self):
         if self.wlan.isconnected() and self.wlan.status() >= 0:
             print("Connected")
-            self.led.value(1)
+            return 1
         else:
-            pass
-            # Need Something here
+            return 0
     # def is_connection_aborted(self):
     #     self.led.value(0)
     #     reconnect_attempts = 0

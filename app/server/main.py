@@ -2,12 +2,12 @@ import datetime
 import socket
 import time
 import ast
-from .server_config import *
+from app.server.server_config import *
 from db.postgres_client import PostgresSQL
 from db.queries import *
 #import boto3
 import json
-from .message import Message
+from app.server.message import Message
 
 
 class Server:
@@ -39,12 +39,14 @@ class Server:
 
     def litter_box_sensor(self):
         m, address = self.server_socket.recvfrom(self.buffer_size)
-
         data = ast.literal_eval(m.decode('utf-8'))
 
-        in_and_out_record = self.data_formatter(data)
-
-        self.db.add_record(SQL_DICT['INSERT_LITTERBOX_RECORD'], in_and_out_record)
+        if data['msg_type_cd'] == 'H':
+            heartbeat_record = self.heartbeat_data_formatter(data)
+            self.db.add_record(SQL_DICT['INSERT_HEARTBEAT_RECORD'], heartbeat_record)
+        else:
+            in_and_out_record = self.data_formatter(data)
+            self.db.add_record(SQL_DICT['INSERT_LITTERBOX_RECORD'], in_and_out_record)
 
         # self.invoke_lambda()
 
@@ -67,6 +69,13 @@ class Server:
 
         return record
 
+    @staticmethod
+    def heartbeat_data_formatter(data: dict):
+        heartbeat_time = datetime.datetime(*tuple(data["time"][0:6]))
+        record = {"time": heartbeat_time
+                  }
+
+        return record
     # def invoke_lambda(self, data: dict):
     #
     #     if data['type'] == 1:
