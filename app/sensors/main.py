@@ -5,14 +5,9 @@ import socket
 
 import wifi_connection
 from sensor_config import *
+from ntptime import *
 
-# while True:
-#     led = Pin("LED", Pin.OUT)
-#     led.value(1)
-#     pir = Pin(22, Pin.IN, Pin.PULL_DOWN).value()
-#     print(pir)
-#     led.value(0)
-#     utime.sleep(1)
+
 class Sensor():
 
     def __init__(self):
@@ -26,11 +21,29 @@ class Sensor():
         self.threshold = THRESHOLD
         self.record_type = 1  # Assumed to be a normal enter got detected
 
+        self.ntptime = ntptime()
+        self.board_led = Pin("LED", Pin.OUT)
+
     def execute(self):
+
+        self.board_led.value(1)  # power on sign
+        utime.sleep(5)
+        self.board_led.value(0)
 
         self.wifi = wifi_connection.Connection()
         self.wifi.connect()
-        self.wifi.show_connection_status()
+
+        for c in range(5):  # wifi connecting sign
+            self.board_led.value(0)
+            utime.sleep(0.3)
+            self.board_led.value(1)
+            utime.sleep(0.3)
+            c += 1
+
+        utime.sleep(5)  # wait for wifi connection status to change
+        wifi_status = self.wifi.show_connection_status()
+        print(wifi_status)
+        self.board_led.value(1 - wifi_status)
 
         while True:
 
@@ -42,7 +55,8 @@ class Sensor():
 
             if sensor > 0:
                 self.timer = 0
-                in_time = utime.localtime()
+                # in_time = utime.localtime()
+                in_time = ntptime.time_getter()
                 print(in_time)
 
                 while sensor != 0:
@@ -55,7 +69,8 @@ class Sensor():
                         self.record_type = 2  # When it takes way too long for a cat to poop
                         break
 
-                out_time = utime.localtime()
+                # out_time = utime.localtime()
+                out_time = ntptime.time_getter()
                 print(out_time)
 
                 record = {'in_time': in_time, 'out_time': out_time,
