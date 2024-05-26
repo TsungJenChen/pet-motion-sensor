@@ -53,7 +53,7 @@ class Sensor():
             heartbeat_check_status, heartbeat_data = self.heartbeat.check_heartbeat(heartbeat_check_status)
 
             if heartbeat_data is None:
-                continue
+                pass
             else:
                 try:
                     msg = json.dumps(heartbeat_data).encode('utf-8')
